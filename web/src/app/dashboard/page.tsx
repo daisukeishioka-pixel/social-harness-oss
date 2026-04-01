@@ -1,5 +1,4 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PlatformConnectCard } from "@/components/dashboard/platform-connect-card";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import {
   FollowerChart,
@@ -25,41 +24,6 @@ export default function DashboardPage() {
         <p className="text-sm text-gray-500 mt-1">
           SNSアカウントの状況を一覧で確認できます
         </p>
-      </div>
-
-      {/* Platform connection status */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        <PlatformConnectCard
-          platform="instagram"
-          label="Instagram"
-          description="写真・動画・リール・ストーリーズ"
-          connected={false}
-        />
-        <PlatformConnectCard
-          platform="youtube"
-          label="YouTube"
-          description="動画アップロード・分析"
-          connected={false}
-        />
-        <PlatformConnectCard
-          platform="threads"
-          label="Threads"
-          description="テキスト・画像・動画"
-          connected={false}
-        />
-        <PlatformConnectCard
-          platform="tiktok"
-          label="TikTok"
-          description="ショート動画・ライブ"
-          connected={false}
-        />
-        <PlatformConnectCard
-          platform="x"
-          label="X (オプション)"
-          description="クライアントAPIキー必要"
-          connected={false}
-          optional
-        />
       </div>
 
       {/* Summary metrics */}
