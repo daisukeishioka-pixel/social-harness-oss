@@ -1,11 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { getSupabaseBrowser } from "@/lib/supabase-browser";
 
-export default function LoginPage() {
+export default function LoginPageWrapper() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-50"><p className="text-sm text-gray-400">読み込み中...</p></div>}>
+      <LoginPage />
+    </Suspense>
+  );
+}
+
+function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") || "/dashboard";

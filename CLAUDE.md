@@ -213,73 +213,73 @@ social-harness-oss/
 
 ## 7. 開発フェーズ詳細
 
-### Phase 1: 基盤構築（目安1週間）
+### Phase 1: 基盤構築 ✅ 完了
 
-#### Step 1: Supabaseスキーマ投入
+#### Step 1: Supabaseスキーマ投入 ✅
 - supabase MCP の list_tables で既存テーブル確認
 - 001_initial_schema.sql を execute_sql で実行（大きければCREATE TABLEごとに分割）
 - 完了後に list_tables で7テーブル + ビュー確認
 
-#### Step 2: YouTube OAuth callback
+#### Step 2: YouTube OAuth callback ✅
 - ファイル: web/src/app/api/auth/youtube/callback/route.ts
 - Threads/Instagramと同じパターン
 - exchangeYouTubeCode() → getYouTubeChannel() → platform_accounts に upsert
 - YouTube固有: refresh_token を metadata.refresh_token に格納（Metaと違って別管理）
 - リダイレクト先: /dashboard?connected=youtube
 
-#### Step 3: ダッシュボードRechartsグラフ
+#### Step 3: ダッシュボードRechartsグラフ ✅
 - web/src/lib/mock-data.ts を作成。過去30日〜90日のダミーデータ生成関数
 - web/src/components/dashboard/performance-chart.tsx: AreaChart（リーチ推移、3プラットフォーム線）
 - web/src/components/dashboard/follower-chart.tsx: LineChart（フォロワー推移、90日）
 - web/src/components/dashboard/engagement-bar-chart.tsx: BarChart（投稿別エンゲージメント率、直近10投稿）
 - dashboard/page.tsx 更新: Tabs内にグラフ配置、MetricCardの値をモックデータ集計値に
 
-#### Step 4: Vercelデプロイ
+#### Step 4: Vercelデプロイ ✅
 - cd web && vercel --prod
 - 環境変数設定
 - OAuth callback URLをVercelドメインに変更
 
 ---
 
-### Phase 2: データ収集パイプライン（目安1-2週間）
+### Phase 2: データ収集パイプライン ✅ 完了
 
-#### Step 5: Cloudflare Workers Cron
+#### Step 5: Cloudflare Workers Cron ✅
 - workers/ に Cloudflare Workers プロジェクト構築
 - wrangler.toml: crons = ["0 * * * *"(毎時), "0 3 * * *"(毎日3時), "0 6 * * 1"(毎週月曜)]
 - collect-insights.ts: 全アクティブアカウントの最新25投稿のインサイトを取得→insights_snapshotsにUPSERT
 - collect-account-metrics.ts: アカウントレベル指標を取得→account_metricsにUPSERT
 - レート制限考慮: APIコール間にwait。エラーは個別catch（1アカウントの失敗で他を止めない）
 
-#### Step 6: トークンリフレッシュ自動化
+#### Step 6: トークンリフレッシュ自動化 ✅
 - refresh-tokens.ts: token_expires_atが7日以内のアカウントを自動リフレッシュ
 - Instagram/Threads: 長期トークンリフレッシュ
 - YouTube: refresh_tokenでアクセストークン再取得（refresh_token自体は不変）
 - X: クライアント側の責任（managed_by_client = true）
 - 3回連続失敗で is_active = false
 
-#### Step 7: ダッシュボードをリアルデータに切替
+#### Step 7: ダッシュボードをリアルデータに切替 ✅
 - web/src/app/api/insights/route.ts: v_post_performance + account_metrics からデータ取得
 - ダッシュボード: データあり→リアルデータ、なし→モック or 接続案内表示
 - post-performance-table.tsx: 投稿一覧テーブル（ソート・フィルタ機能）
 
 ---
 
-### Phase 3: 投稿機能（目安1-2週間）
+### Phase 3: 投稿機能 ✅ 完了
 
-#### Step 8: 投稿スケジューラーUI
+#### Step 8: 投稿スケジューラーUI ✅
 - scheduler/page.tsx: カレンダービュー（月表示、日ごとの投稿ドット）
 - post-composer.tsx: キャプション入力、画像/動画アップロード、プラットフォーム選択チェックボックス、日時ピッカー、ハッシュタグ入力
 - プラットフォーム別制約をUIに反映: IG(画像必須/2200字), Threads(500字), YT(動画必須), X(280字)
 - api/posts/route.ts: scheduled_posts テーブルへのCRUD
 - posts/page.tsx: 投稿一覧（ステータス・プラットフォーム別フィルタ）
 
-#### Step 9: 投稿エンジン（Workers）
+#### Step 9: 投稿エンジン（Workers） ✅
 - publish-scheduled.ts: scheduled_at <= now() の投稿を取得→各プラットフォームAPIで投稿
 - ステータス管理: scheduled → publishing → published/failed
 - 部分成功対応（3プラットフォーム中2つ成功した場合も記録）
 - 成功した投稿はpostsテーブルにもINSERT（インサイト収集対象にする）
 
-#### Step 10: クロスポスト最適化
+#### Step 10: クロスポスト最適化 ✅
 - web/src/lib/cross-post.ts: プラットフォーム別にコンテンツを自動調整
 - adaptForInstagram(): 画像必須チェック、2200字トリム、ハッシュタグ末尾追加
 - adaptForThreads(): 500字トリム、メディア判定
@@ -288,9 +288,9 @@ social-harness-oss/
 
 ---
 
-### Phase 4: AI + LINE連携（目安2-3週間）
+### Phase 4: AI + LINE連携 ✅ 完了
 
-#### Step 11: AI投稿提案
+#### Step 11: AI投稿提案 ✅
 - api/ai/suggest/route.ts: Anthropic API呼び出し
 - 入力: 直近10投稿のパフォーマンスデータ + Top5投稿 + 業種 + トーン
 - 出力: 3つの投稿提案（キャプション案 + ハッシュタグ案）
@@ -298,7 +298,7 @@ social-harness-oss/
 - ai-suggestion-card.tsx: 採用→PostComposerに流し込み、却下→ステータス更新
 - フィードバックループ: 採用した提案の投稿パフォーマンスを自動記録
 
-#### Step 12: LINE Harness連携
+#### Step 12: LINE Harness連携 ✅
 - LINE Harnessとの連携はコードベース統合ではない。トラッキングURLの規約を共有する緩い連携。
 - line-tracking-settings.tsx: LINE公式アカウントURL入力、UTMパラメータ自動生成
   - Instagram用: {LINE_URL}?utm_source=instagram&utm_medium=social&utm_campaign={name}
@@ -309,14 +309,14 @@ social-harness-oss/
 
 ---
 
-### Phase 5: 受託展開準備
+### Phase 5: 受託展開準備 ✅ 完了
 
-#### Step 13: マルチテナント認証
+#### Step 13: マルチテナント認証 ✅
 - Supabase Auth（メール/パスワード認証）
 - JWT に tenant_id クレーム付与
 - settings/page.tsx: アカウント設定、プラットフォーム接続管理、X APIキー入力、LINE導線設定
 
-#### Step 14: ドキュメント整備
+#### Step 14: ドキュメント整備 ✅
 - docs/setup-guide.md: 前提条件、Meta/Google/Supabase/Cloudflare/Vercelの設定手順、環境変数一覧、トラブルシューティング
 
 ---

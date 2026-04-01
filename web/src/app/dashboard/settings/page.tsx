@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { Suspense, useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +9,14 @@ import { LineTrackingSettings } from "@/components/dashboard/line-tracking-setti
 import { getSupabaseBrowser } from "@/lib/supabase-browser";
 
 type TabId = "account" | "platforms" | "x-api" | "line";
+
+export default function SettingsPageWrapper() {
+  return (
+    <Suspense fallback={<div className="p-8 text-sm text-gray-400">読み込み中...</div>}>
+      <SettingsPage />
+    </Suspense>
+  );
+}
 
 interface ConnectedAccount {
   id: string;
@@ -19,7 +27,7 @@ interface ConnectedAccount {
   token_expires_at: string | null;
 }
 
-export default function SettingsPage() {
+function SettingsPage() {
   const searchParams = useSearchParams();
   const initialTab = (searchParams.get("tab") === "x" ? "x-api" : searchParams.get("tab")) as TabId | null;
   const [activeTab, setActiveTab] = useState<TabId>(initialTab || "account");
