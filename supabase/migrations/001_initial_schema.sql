@@ -17,7 +17,7 @@ CREATE TABLE tenants (
 );
 
 -- 2. PLATFORM ACCOUNTS (SNSアカウント)
-CREATE TYPE platform_type AS ENUM ('instagram', 'youtube', 'threads', 'x');
+CREATE TYPE platform_type AS ENUM ('instagram', 'youtube', 'threads', 'tiktok', 'x');
 
 CREATE TABLE platform_accounts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

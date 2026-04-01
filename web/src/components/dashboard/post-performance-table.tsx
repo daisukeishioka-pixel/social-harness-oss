@@ -8,6 +8,7 @@ const PLATFORM_LABELS: Record<string, { label: string; color: string }> = {
   instagram: { label: "Instagram", color: "bg-pink-100 text-pink-700" },
   youtube: { label: "YouTube", color: "bg-red-100 text-red-700" },
   threads: { label: "Threads", color: "bg-gray-100 text-gray-700" },
+  tiktok: { label: "TikTok", color: "bg-cyan-100 text-cyan-700" },
   x: { label: "X", color: "bg-blue-100 text-blue-700" },
 };
 
@@ -94,6 +95,19 @@ const MOCK_POSTS: PostPerformance[] = [
     shares: 22,
     engagement_rate: 0.0875,
   },
+  {
+    post_id: "6",
+    platform: "tiktok",
+    caption: "朝のルーティン🌅 #morningroutine #生活",
+    published_at: "2026-03-29T08:00:00Z",
+    impressions: null,
+    reach: null,
+    views: 45000,
+    likes: 3200,
+    comments: 180,
+    shares: 520,
+    engagement_rate: 0.0867,
+  },
 ];
 
 interface Props {
@@ -147,7 +161,7 @@ export function PostPerformanceTable({ posts }: Props) {
             )}
           </CardTitle>
           <div className="flex gap-1">
-            {["all", "instagram", "youtube", "threads"].map((p) => (
+            {["all", "instagram", "youtube", "threads", "tiktok"].map((p) => (
               <button
                 key={p}
                 onClick={() => setFilterPlatform(p)}

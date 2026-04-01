@@ -3,10 +3,11 @@ import {
   getInstagramAccountInsights,
   getThreadsUserInsights,
   getYouTubeChannel,
+  getTikTokUser,
   wait,
 } from "../lib/platforms";
 
-type Platform = "instagram" | "youtube" | "threads" | "x";
+type Platform = "instagram" | "youtube" | "threads" | "tiktok" | "x";
 
 interface PlatformAccount {
   id: string;
@@ -59,6 +60,8 @@ async function collectMetricsForAccount(
       return collectThreadsMetrics(supabase, account, date);
     case "youtube":
       return collectYouTubeMetrics(supabase, account, date);
+    case "tiktok":
+      return collectTikTokMetrics(supabase, account, date);
     case "x":
       // X account-level metrics are not available via API
       return;
@@ -127,6 +130,22 @@ async function collectYouTubeMetrics(
     total_impressions: Number(channel.statistics.viewCount) || null,
   }, {
     video_count: channel.statistics.videoCount,
+  });
+}
+
+async function collectTikTokMetrics(
+  supabase: SupabaseClient,
+  account: PlatformAccount,
+  date: string
+) {
+  const user = await getTikTokUser(account.access_token);
+
+  await upsertMetrics(supabase, account, date, {
+    followers: user.follower_count ?? null,
+    following: user.following_count ?? null,
+  }, {
+    likes_count: user.likes_count,
+    video_count: user.video_count,
   });
 }
 

@@ -10,6 +10,8 @@ export interface Env {
   META_APP_SECRET: string;
   GOOGLE_CLIENT_ID: string;
   GOOGLE_CLIENT_SECRET: string;
+  TIKTOK_CLIENT_KEY: string;
+  TIKTOK_CLIENT_SECRET: string;
 }
 
 export default {

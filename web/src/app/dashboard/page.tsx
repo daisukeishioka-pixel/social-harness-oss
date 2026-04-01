@@ -20,7 +20,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Platform connection status */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <PlatformConnectCard
           platform="instagram"
           label="Instagram"
@@ -37,6 +37,12 @@ export default function DashboardPage() {
           platform="threads"
           label="Threads"
           description="テキスト・画像・動画"
+          connected={false}
+        />
+        <PlatformConnectCard
+          platform="tiktok"
+          label="TikTok"
+          description="ショート動画・ライブ"
           connected={false}
         />
         <PlatformConnectCard
@@ -83,6 +89,7 @@ export default function DashboardPage() {
           <TabsTrigger value="instagram">Instagram</TabsTrigger>
           <TabsTrigger value="youtube">YouTube</TabsTrigger>
           <TabsTrigger value="threads">Threads</TabsTrigger>
+          <TabsTrigger value="tiktok">TikTok</TabsTrigger>
         </TabsList>
 
         <TabsContent value="all" className="mt-4 space-y-4">
@@ -104,6 +111,12 @@ export default function DashboardPage() {
         </TabsContent>
 
         <TabsContent value="threads" className="mt-4 space-y-4">
+          <FollowerChart />
+          <EngagementChart />
+          <PostPerformanceChart />
+        </TabsContent>
+
+        <TabsContent value="tiktok" className="mt-4 space-y-4">
           <FollowerChart />
           <EngagementChart />
           <PostPerformanceChart />

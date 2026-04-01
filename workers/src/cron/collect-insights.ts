@@ -5,11 +5,12 @@ import {
   getThreadsPosts,
   getThreadsPostInsights,
   getYouTubeVideos,
+  getTikTokVideos,
   getXTweets,
   wait,
 } from "../lib/platforms";
 
-type Platform = "instagram" | "youtube" | "threads" | "x";
+type Platform = "instagram" | "youtube" | "threads" | "tiktok" | "x";
 
 interface PlatformAccount {
   id: string;
@@ -59,6 +60,8 @@ async function collectForAccount(
       return collectThreads(supabase, account);
     case "youtube":
       return collectYouTube(supabase, account);
+    case "tiktok":
+      return collectTikTok(supabase, account);
     case "x":
       return collectX(supabase, account);
   }
@@ -188,6 +191,36 @@ async function collectYouTube(
       views: Number(video.statistics.viewCount) || null,
       likes: Number(video.statistics.likeCount) || null,
       comments: Number(video.statistics.commentCount) || null,
+    });
+
+    await wait(200);
+  }
+}
+
+// ---- TikTok ----
+async function collectTikTok(
+  supabase: SupabaseClient,
+  account: PlatformAccount
+) {
+  const videosData = await getTikTokVideos(account.access_token);
+  const videos = videosData.videos || [];
+
+  for (const video of videos) {
+    const dbPost = await upsertPost(supabase, account, {
+      platform_post_id: video.id,
+      post_type: "video",
+      caption: video.title,
+      media_url: video.cover_image_url,
+      permalink: video.share_url,
+      published_at: new Date(video.create_time * 1000).toISOString(),
+    });
+    if (!dbPost) continue;
+
+    await upsertSnapshot(supabase, account, dbPost.id, {
+      views: video.view_count,
+      likes: video.like_count,
+      comments: video.comment_count,
+      shares: video.share_count,
     });
 
     await wait(200);

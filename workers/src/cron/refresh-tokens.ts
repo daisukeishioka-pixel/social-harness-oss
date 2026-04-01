@@ -3,10 +3,11 @@ import {
   refreshInstagramToken,
   refreshThreadsToken,
   refreshYouTubeToken,
+  refreshTikTokToken,
   wait,
 } from "../lib/platforms";
 
-type Platform = "instagram" | "youtube" | "threads" | "x";
+type Platform = "instagram" | "youtube" | "threads" | "tiktok" | "x";
 
 interface PlatformAccount {
   id: string;
@@ -23,6 +24,8 @@ interface Env {
   META_APP_SECRET: string;
   GOOGLE_CLIENT_ID: string;
   GOOGLE_CLIENT_SECRET: string;
+  TIKTOK_CLIENT_KEY: string;
+  TIKTOK_CLIENT_SECRET: string;
 }
 
 /**
@@ -162,6 +165,33 @@ async function refreshAccountToken(
         .from("platform_accounts")
         .update({
           access_token: result.access_token,
+          token_expires_at: expiresAt,
+        })
+        .eq("id", account.id);
+      break;
+    }
+
+    case "tiktok": {
+      // TikTok: access_token 24h, refresh_token 365 days
+      const refreshToken =
+        account.refresh_token ||
+        (account.metadata.refresh_token as string);
+      if (!refreshToken) {
+        throw new Error("No refresh_token available for TikTok account");
+      }
+      const result = await refreshTikTokToken(
+        refreshToken,
+        env.TIKTOK_CLIENT_KEY,
+        env.TIKTOK_CLIENT_SECRET
+      );
+      const expiresAt = new Date(
+        Date.now() + result.expires_in * 1000
+      ).toISOString();
+      await supabase
+        .from("platform_accounts")
+        .update({
+          access_token: result.access_token,
+          refresh_token: result.refresh_token,
           token_expires_at: expiresAt,
         })
         .eq("id", account.id);

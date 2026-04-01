@@ -38,6 +38,9 @@ export function PlatformConnectCard({
       case "youtube":
         authUrl = `${origin}/api/auth/youtube/connect`;
         break;
+      case "tiktok":
+        authUrl = `${origin}/api/auth/tiktok/connect`;
+        break;
       case "x":
         // X requires client-provided API keys
         window.location.href = "/dashboard/settings?tab=x";

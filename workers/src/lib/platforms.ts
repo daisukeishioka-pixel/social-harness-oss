@@ -233,6 +233,87 @@ export async function refreshYouTubeToken(
 }
 
 // ============================================================
+// TikTok
+// ============================================================
+
+const TIKTOK_API_BASE = "https://open.tiktokapis.com/v2";
+
+export interface TikTokVideo {
+  id: string;
+  title: string;
+  cover_image_url: string;
+  share_url: string;
+  create_time: number;
+  like_count: number;
+  comment_count: number;
+  share_count: number;
+  view_count: number;
+}
+
+export async function getTikTokVideos(token: string, maxCount = 20) {
+  const res = await fetch(`${TIKTOK_API_BASE}/video/list/`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ max_count: maxCount }),
+  });
+  if (!res.ok) throw new Error(`TikTok video list failed: ${res.status}`);
+  const data = await res.json() as {
+    data: { videos: TikTokVideo[]; cursor: number; has_more: boolean };
+  };
+  return data.data;
+}
+
+export async function getTikTokUser(token: string) {
+  const res = await fetch(`${TIKTOK_API_BASE}/user/info/`, {
+    method: "GET",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error(`TikTok user info failed: ${res.status}`);
+  const data = await res.json() as {
+    data: {
+      user: {
+        open_id: string;
+        display_name: string;
+        follower_count: number;
+        following_count: number;
+        likes_count: number;
+        video_count: number;
+      };
+    };
+  };
+  return data.data.user;
+}
+
+export async function refreshTikTokToken(
+  refreshToken: string,
+  clientKey: string,
+  clientSecret: string
+) {
+  const res = await fetch(`${TIKTOK_API_BASE}/oauth/token/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      client_key: clientKey,
+      client_secret: clientSecret,
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+    }),
+  });
+  if (!res.ok) throw new Error(`TikTok token refresh failed: ${res.status}`);
+  const data = await res.json() as {
+    access_token: string;
+    refresh_token: string;
+    expires_in: number;
+    refresh_expires_in: number;
+    open_id: string;
+  };
+  return data;
+}
+
+// ============================================================
 // X (optional)
 // ============================================================
 

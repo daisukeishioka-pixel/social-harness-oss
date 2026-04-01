@@ -1,4 +1,4 @@
-export type PlatformType = "instagram" | "youtube" | "threads" | "x";
+export type PlatformType = "instagram" | "youtube" | "threads" | "tiktok" | "x";
 
 export interface PlatformAccount {
   id: string;
@@ -73,5 +73,6 @@ export const PLATFORM_CONFIG: Record<
   instagram: { label: "Instagram", color: "#E1306C", bgColor: "#FDE8EF" },
   youtube: { label: "YouTube", color: "#FF0000", bgColor: "#FFE5E5" },
   threads: { label: "Threads", color: "#000000", bgColor: "#F0F0F0" },
+  tiktok: { label: "TikTok", color: "#00F2EA", bgColor: "#E5FFFE" },
   x: { label: "X", color: "#1DA1F2", bgColor: "#E8F5FD" },
 };

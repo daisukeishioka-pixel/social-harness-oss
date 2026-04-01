@@ -19,23 +19,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // -- Mock data --
 
 const followerData = [
-  { date: "3/1", instagram: 12400, youtube: 8500, threads: 3200 },
-  { date: "3/5", instagram: 12650, youtube: 8620, threads: 3350 },
-  { date: "3/10", instagram: 12900, youtube: 8780, threads: 3510 },
-  { date: "3/15", instagram: 13200, youtube: 8950, threads: 3700 },
-  { date: "3/20", instagram: 13500, youtube: 9100, threads: 3880 },
-  { date: "3/25", instagram: 13850, youtube: 9300, threads: 4050 },
-  { date: "3/31", instagram: 14200, youtube: 9520, threads: 4250 },
+  { date: "3/1", instagram: 12400, youtube: 8500, threads: 3200, tiktok: 15800 },
+  { date: "3/5", instagram: 12650, youtube: 8620, threads: 3350, tiktok: 16200 },
+  { date: "3/10", instagram: 12900, youtube: 8780, threads: 3510, tiktok: 16900 },
+  { date: "3/15", instagram: 13200, youtube: 8950, threads: 3700, tiktok: 17500 },
+  { date: "3/20", instagram: 13500, youtube: 9100, threads: 3880, tiktok: 18300 },
+  { date: "3/25", instagram: 13850, youtube: 9300, threads: 4050, tiktok: 19100 },
+  { date: "3/31", instagram: 14200, youtube: 9520, threads: 4250, tiktok: 20000 },
 ];
 
 const engagementData = [
-  { date: "3/1", instagram: 4.2, youtube: 6.1, threads: 8.5 },
-  { date: "3/5", instagram: 3.8, youtube: 5.8, threads: 7.9 },
-  { date: "3/10", instagram: 4.5, youtube: 6.3, threads: 9.1 },
-  { date: "3/15", instagram: 4.1, youtube: 5.5, threads: 8.2 },
-  { date: "3/20", instagram: 4.8, youtube: 6.7, threads: 9.5 },
-  { date: "3/25", instagram: 4.3, youtube: 6.0, threads: 8.8 },
-  { date: "3/31", instagram: 4.6, youtube: 6.4, threads: 9.2 },
+  { date: "3/1", instagram: 4.2, youtube: 6.1, threads: 8.5, tiktok: 12.3 },
+  { date: "3/5", instagram: 3.8, youtube: 5.8, threads: 7.9, tiktok: 11.5 },
+  { date: "3/10", instagram: 4.5, youtube: 6.3, threads: 9.1, tiktok: 13.1 },
+  { date: "3/15", instagram: 4.1, youtube: 5.5, threads: 8.2, tiktok: 11.8 },
+  { date: "3/20", instagram: 4.8, youtube: 6.7, threads: 9.5, tiktok: 14.2 },
+  { date: "3/25", instagram: 4.3, youtube: 6.0, threads: 8.8, tiktok: 12.6 },
+  { date: "3/31", instagram: 4.6, youtube: 6.4, threads: 9.2, tiktok: 13.5 },
 ];
 
 const postPerformanceData = [
@@ -50,6 +50,7 @@ const COLORS = {
   instagram: "#E1306C",
   youtube: "#FF0000",
   threads: "#000000",
+  tiktok: "#00F2EA",
 };
 
 export function FollowerChart() {
@@ -91,6 +92,15 @@ export function FollowerChart() {
               stroke={COLORS.threads}
               fill={COLORS.threads}
               fillOpacity={0.08}
+              strokeWidth={2}
+            />
+            <Area
+              type="monotone"
+              dataKey="tiktok"
+              name="TikTok"
+              stroke={COLORS.tiktok}
+              fill={COLORS.tiktok}
+              fillOpacity={0.15}
               strokeWidth={2}
             />
           </AreaChart>
@@ -135,6 +145,14 @@ export function EngagementChart() {
               dataKey="threads"
               name="Threads"
               stroke={COLORS.threads}
+              strokeWidth={2}
+              dot={{ r: 3 }}
+            />
+            <Line
+              type="monotone"
+              dataKey="tiktok"
+              name="TikTok"
+              stroke={COLORS.tiktok}
               strokeWidth={2}
               dot={{ r: 3 }}
             />

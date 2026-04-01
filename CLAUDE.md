@@ -15,7 +15,7 @@
 ## 1. プロジェクト概要
 
 ### 1.1 何を作るか
-Instagram / YouTube / Threads の3プラットフォームを1つの管理画面で運用するOSSのSNSマーケティングプラットフォーム。
+Instagram / YouTube / Threads / TikTok の4プラットフォームを1つの管理画面で運用するOSSのSNSマーケティングプラットフォーム。
 オプションで X（Twitter）連携も可能（クライアントがAPI費用を負担する形）。
 
 ### 1.2 ビジネスモデル
@@ -87,7 +87,8 @@ social-harness-oss/
 │       │   │   ├── auth/
 │       │   │   │   ├── threads/callback/route.ts    # 実装済み
 │       │   │   │   ├── instagram/callback/route.ts  # 実装済み
-│       │   │   │   └── youtube/callback/route.ts    # Phase1 Step2
+│       │   │   │   ├── youtube/callback/route.ts    # 実装済み
+│       │   │   │   └── tiktok/callback/route.ts     # 実装済み
 │       │   │   ├── insights/route.ts                # Phase2 Step7
 │       │   │   ├── posts/
 │       │   │   │   ├── route.ts                     # Phase3 Step8
@@ -121,6 +122,7 @@ social-harness-oss/
 │               ├── threads.ts                       # 実装済み
 │               ├── instagram.ts                     # 実装済み
 │               ├── youtube.ts                       # 実装済み
+│               ├── tiktok.ts                        # 実装済み
 │               └── x.ts                             # 実装済み（オプション）
 │
 ├── workers/                                # Cloudflare Workers
@@ -163,7 +165,7 @@ social-harness-oss/
 | ai_suggestions | AI提案履歴（提案内容・採用/却下・結果フィードバック） |
 
 型定義:
-- platform_type ENUM: 'instagram', 'youtube', 'threads', 'x'
+- platform_type ENUM: 'instagram', 'youtube', 'threads', 'tiktok', 'x'
 - post_status ENUM: 'draft', 'scheduled', 'publishing', 'published', 'failed'
 
 テナント分離: 全テーブルに tenant_id カラム。RLS + JWTクレームでフィルタリング。Workers は service_role キーで RLS バイパス。
@@ -191,6 +193,14 @@ social-harness-oss/
 - クォータ: 10,000ユニット/日（動画アップロード1回=1,600ユニット）
 - 投稿: videos.insert（resumable upload）
 - インサイト: viewCount, likeCount, commentCount（Data API）。日別詳細（Analytics API）
+
+### TikTok API
+- 認証: TikTok Login Kit（OAuth 2.0）
+- トークン寿命: access_token 24時間、refresh_token 365日
+- スコープ: user.info.basic, user.info.stats, video.list, video.publish, video.upload
+- 投稿: Content Posting API（動画アップロード → publish）
+- インサイト: video.list / video.query で view_count, like_count, comment_count, share_count 取得
+- レート制限: エンドポイントごとに異なる（一般的に寛容）
 
 ### X API v2（オプション）
 - 認証: OAuth 2.0 PKCE
