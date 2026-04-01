@@ -48,6 +48,9 @@ export function PostComposer({
   >(new Set());
   const [scheduledAt, setScheduledAt] = useState("");
   const [mediaUrls] = useState<string[]>([]);
+  const [insertLineLink, setInsertLineLink] = useState(false);
+  const [lineUrl, setLineUrl] = useState("");
+  const [lineCampaign, setLineCampaign] = useState("");
 
   const togglePlatform = (p: PlatformType) => {
     const next = new Set(selectedPlatforms);
@@ -182,6 +185,47 @@ export function PostComposer({
               <p className="mt-1 text-xs text-amber-500">
                 {mediaWarnings.join(" / ")}
               </p>
+            )}
+          </div>
+
+          {/* LINE tracking link */}
+          <div className="rounded-lg border border-gray-200 p-4 space-y-3">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={insertLineLink}
+                onChange={(e) => setInsertLineLink(e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm font-medium text-gray-700">
+                LINE導線リンクを挿入
+              </span>
+              <span className="text-xs text-gray-400">
+                (LINE Harness連携)
+              </span>
+            </label>
+            {insertLineLink && (
+              <div className="space-y-2 pl-6">
+                <input
+                  type="url"
+                  value={lineUrl}
+                  onChange={(e) => setLineUrl(e.target.value)}
+                  placeholder="https://lin.ee/xxxxxxx"
+                  className="w-full rounded-lg border border-gray-200 px-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+                <input
+                  type="text"
+                  value={lineCampaign}
+                  onChange={(e) => setLineCampaign(e.target.value)}
+                  placeholder="キャンペーン名（例: spring_2026）"
+                  className="w-full rounded-lg border border-gray-200 px-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+                {lineUrl && selectedPlatforms.size > 0 && (
+                  <p className="text-xs text-gray-400">
+                    各プラットフォーム別にUTMパラメータ付きURLがキャプション末尾に自動追加されます
+                  </p>
+                )}
+              </div>
             )}
           </div>
 
