@@ -1,0 +1,19 @@
+name = "social-harness-workers"
+main = "src/index.ts"
+compatibility_date = "2025-03-27"
+
+[triggers]
+crons = [
+  "0 * * * *",     # 毎時: インサイト収集
+  "0 3 * * *",     # 毎日3時: アカウントメトリクス収集
+  "0 6 * * 1",     # 毎週月曜6時: トークンリフレッシュ
+]
+
+[vars]
+SUPABASE_URL = "https://lcisydaplexmehwxopdz.supabase.co"
+
+# Secrets (set via `wrangler secret put`):
+# SUPABASE_SERVICE_ROLE_KEY
+# META_APP_SECRET
+# GOOGLE_CLIENT_ID
+# GOOGLE_CLIENT_SECRET
