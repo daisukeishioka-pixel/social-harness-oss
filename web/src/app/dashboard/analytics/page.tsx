@@ -1,11 +1,19 @@
+"use client";
+
+import { useState } from "react";
 import {
   FollowerChart,
   EngagementChart,
   PostPerformanceChart,
 } from "@/components/dashboard/performance-charts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { PeriodKey, PlatformKey } from "@/lib/mock-data";
+
+type TabValue = "all" | PlatformKey;
 
 export default function AnalyticsPage() {
+  const [period, setPeriod] = useState<PeriodKey>("month");
+
   return (
     <div>
       <div className="mb-6">
@@ -24,13 +32,23 @@ export default function AnalyticsPage() {
           <TabsTrigger value="tiktok">TikTok</TabsTrigger>
         </TabsList>
 
-        {["all", "instagram", "youtube", "threads", "tiktok"].map((tab) => (
-          <TabsContent key={tab} value={tab} className="mt-4 space-y-4">
-            <FollowerChart />
-            <EngagementChart />
-            <PostPerformanceChart />
-          </TabsContent>
-        ))}
+        {(["all", "instagram", "youtube", "threads", "tiktok"] as TabValue[]).map(
+          (tab) => (
+            <TabsContent key={tab} value={tab} className="mt-4 space-y-4">
+              <FollowerChart
+                platform={tab}
+                period={period}
+                onPeriodChange={setPeriod}
+              />
+              <EngagementChart
+                platform={tab}
+                period={period}
+                onPeriodChange={setPeriod}
+              />
+              <PostPerformanceChart platform={tab} />
+            </TabsContent>
+          )
+        )}
       </Tabs>
     </div>
   );
