@@ -7,7 +7,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   // Pages that don't use the sidebar layout
-  if (pathname === "/" || pathname === "/login") {
+  if (pathname === "/" || pathname === "/login" || pathname === "/signup") {
     return <>{children}</>;
   }
 

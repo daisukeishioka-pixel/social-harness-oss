@@ -251,3 +251,62 @@ LEFT JOIN LATERAL (
   ORDER BY s.snapshot_at DESC
   LIMIT 1
 ) ls ON true;
+
+-- ============================================================
+-- USER PROFILES (認証ユーザーとテナントの紐付け)
+-- ============================================================
+
+CREATE TABLE user_profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  role TEXT NOT NULL DEFAULT 'member' CHECK (role IN ('owner', 'admin', 'member')),
+  display_name TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_user_profiles_tenant ON user_profiles(tenant_id);
+
+ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can read own profile" ON user_profiles
+  FOR SELECT USING (id = auth.uid());
+
+CREATE POLICY "Users can update own profile" ON user_profiles
+  FOR UPDATE USING (id = auth.uid());
+
+CREATE TRIGGER set_updated_at BEFORE UPDATE ON user_profiles
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- Tenants RLS: users can only see their own tenant
+CREATE POLICY "Tenant members can read own tenant" ON tenants
+  FOR SELECT USING (
+    id IN (SELECT tenant_id FROM user_profiles WHERE id = auth.uid())
+  );
+
+-- Custom JWT claim: inject tenant_id into access token
+CREATE OR REPLACE FUNCTION public.custom_access_token_hook(event JSONB)
+RETURNS JSONB AS $$
+DECLARE
+  claims JSONB;
+  user_tenant_id UUID;
+BEGIN
+  claims := event->'claims';
+
+  SELECT tenant_id INTO user_tenant_id
+  FROM public.user_profiles
+  WHERE id = (event->>'user_id')::UUID;
+
+  IF user_tenant_id IS NOT NULL THEN
+    claims := jsonb_set(claims, '{tenant_id}', to_jsonb(user_tenant_id::TEXT));
+  END IF;
+
+  event := jsonb_set(event, '{claims}', claims);
+  RETURN event;
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+GRANT USAGE ON SCHEMA public TO supabase_auth_admin;
+GRANT SELECT ON public.user_profiles TO supabase_auth_admin;
+GRANT EXECUTE ON FUNCTION public.custom_access_token_hook TO supabase_auth_admin;
+REVOKE EXECUTE ON FUNCTION public.custom_access_token_hook FROM authenticated, anon, public;
