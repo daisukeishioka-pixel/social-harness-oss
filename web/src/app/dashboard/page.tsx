@@ -1,5 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlatformConnectCard } from "@/components/dashboard/platform-connect-card";
 import { MetricCard } from "@/components/dashboard/metric-card";
@@ -8,6 +6,7 @@ import {
   EngagementChart,
   PostPerformanceChart,
 } from "@/components/dashboard/performance-charts";
+import { PostPerformanceTable } from "@/components/dashboard/post-performance-table";
 
 export default function DashboardPage() {
   return (
@@ -49,29 +48,29 @@ export default function DashboardPage() {
         />
       </div>
 
-      {/* Summary metrics */}
+      {/* Summary metrics (mock aggregates; replaced by real data when accounts are connected) */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <MetricCard
           label="総フォロワー"
-          value="—"
-          change={null}
+          value="27,970"
+          change={3.2}
           description="全プラットフォーム合計"
         />
         <MetricCard
           label="今週のリーチ"
-          value="—"
-          change={null}
+          value="18,400"
+          change={5.1}
           description="7日間合計"
         />
         <MetricCard
           label="エンゲージメント率"
-          value="—"
-          change={null}
+          value="6.4%"
+          change={0.8}
           description="平均"
         />
         <MetricCard
           label="今月の投稿数"
-          value="—"
+          value="24"
           change={null}
           description="全プラットフォーム"
         />
@@ -111,22 +110,8 @@ export default function DashboardPage() {
         </TabsContent>
       </Tabs>
 
-      {/* Recent posts */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-base">最近の投稿</CardTitle>
-            <Badge variant="outline" className="text-xs">
-              全プラットフォーム
-            </Badge>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="flex h-32 items-center justify-center text-sm text-gray-400">
-            投稿データがまだありません。SNSアカウントを接続すると自動で取得されます。
-          </div>
-        </CardContent>
-      </Card>
+      {/* Post performance table */}
+      <PostPerformanceTable />
     </div>
   );
 }
