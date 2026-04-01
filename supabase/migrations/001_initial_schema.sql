@@ -78,9 +78,15 @@ CREATE TABLE insights_snapshots (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Immutable wrapper for date_trunc (required for use in index expressions)
+CREATE OR REPLACE FUNCTION date_trunc_hour_immutable(ts TIMESTAMPTZ)
+RETURNS TIMESTAMPTZ AS $$
+  SELECT date_trunc('hour', ts);
+$$ LANGUAGE sql IMMUTABLE;
+
 -- Prevent duplicate snapshots within same hour
-CREATE UNIQUE INDEX idx_insights_post_hour 
-  ON insights_snapshots (post_id, date_trunc('hour', snapshot_at));
+CREATE UNIQUE INDEX idx_insights_post_hour
+  ON insights_snapshots (post_id, date_trunc_hour_immutable(snapshot_at));
 
 -- 5. ACCOUNT METRICS (アカウントレベル指標 - 日次)
 CREATE TABLE account_metrics (

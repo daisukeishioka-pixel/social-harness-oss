@@ -11,7 +11,7 @@ crons = [
 ]
 
 [vars]
-SUPABASE_URL = "https://lcisydaplexmehwxopdz.supabase.co"
+SUPABASE_URL = "https://wamvtgzobnlcajgxohdr.supabase.co"
 
 # Secrets (set via `wrangler secret put`):
 # SUPABASE_SERVICE_ROLE_KEY
