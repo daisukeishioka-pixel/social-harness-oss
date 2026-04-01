@@ -2,6 +2,7 @@ import { createServiceClient } from "./lib/supabase";
 import { collectInsights } from "./cron/collect-insights";
 import { collectAccountMetrics } from "./cron/collect-account-metrics";
 import { refreshTokens } from "./cron/refresh-tokens";
+import { publishScheduledPosts } from "./posting/publish-scheduled";
 
 export interface Env {
   SUPABASE_URL: string;
@@ -23,6 +24,12 @@ export default {
     const supabase = createServiceClient(env);
 
     switch (controller.cron) {
+      // Every minute: publish due scheduled posts
+      case "* * * * *":
+        console.log("Running: publish-scheduled");
+        await publishScheduledPosts(supabase);
+        break;
+
       // Every hour: collect post-level insights
       case "0 * * * *":
         console.log("Running: collect-insights");
@@ -56,6 +63,7 @@ export default {
         name: "social-harness-workers",
         status: "ok",
         crons: [
+          "* * * * * — publish scheduled posts",
           "0 * * * * — collect post insights",
           "0 3 * * * — collect account metrics",
           "0 6 * * 1 — refresh tokens",
