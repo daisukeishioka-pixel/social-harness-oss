@@ -3,6 +3,11 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlatformConnectCard } from "@/components/dashboard/platform-connect-card";
 import { MetricCard } from "@/components/dashboard/metric-card";
+import {
+  FollowerChart,
+  EngagementChart,
+  PostPerformanceChart,
+} from "@/components/dashboard/performance-charts";
 
 export default function DashboardPage() {
   return (
@@ -81,64 +86,28 @@ export default function DashboardPage() {
           <TabsTrigger value="threads">Threads</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="all" className="mt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">
-                パフォーマンス推移
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex h-64 items-center justify-center text-sm text-gray-400">
-                SNSアカウントを接続すると、ここにパフォーマンスチャートが表示されます
-              </div>
-            </CardContent>
-          </Card>
+        <TabsContent value="all" className="mt-4 space-y-4">
+          <FollowerChart />
+          <EngagementChart />
+          <PostPerformanceChart />
         </TabsContent>
 
-        <TabsContent value="instagram" className="mt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">
-                Instagram パフォーマンス
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex h-64 items-center justify-center text-sm text-gray-400">
-                Instagramアカウントを接続してください
-              </div>
-            </CardContent>
-          </Card>
+        <TabsContent value="instagram" className="mt-4 space-y-4">
+          <FollowerChart />
+          <EngagementChart />
+          <PostPerformanceChart />
         </TabsContent>
 
-        <TabsContent value="youtube" className="mt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">
-                YouTube パフォーマンス
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex h-64 items-center justify-center text-sm text-gray-400">
-                YouTubeアカウントを接続してください
-              </div>
-            </CardContent>
-          </Card>
+        <TabsContent value="youtube" className="mt-4 space-y-4">
+          <FollowerChart />
+          <EngagementChart />
+          <PostPerformanceChart />
         </TabsContent>
 
-        <TabsContent value="threads" className="mt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">
-                Threads パフォーマンス
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex h-64 items-center justify-center text-sm text-gray-400">
-                Threadsアカウントを接続してください
-              </div>
-            </CardContent>
-          </Card>
+        <TabsContent value="threads" className="mt-4 space-y-4">
+          <FollowerChart />
+          <EngagementChart />
+          <PostPerformanceChart />
         </TabsContent>
       </Tabs>
 
